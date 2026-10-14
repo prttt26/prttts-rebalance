@@ -51,7 +51,8 @@
         <Compile Remove="materials/**" />
         <Compile Remove="shaders/**" />
         <Compile Remove="images/**" />
-        <Compile Remove="Shelved/**" /> <!-- 暂时放弃的卡，只存档不编译 -->
+        <Compile Remove="dev/**" /> <!-- 开发资料及未启用设计，不参与编译 -->
+        <EmbeddedResource Remove="dev/**" />
         <EmbeddedResource Remove="Rebalance_by_sts1_revival/**" />
         <EmbeddedResource Remove="materials/**" />
         <EmbeddedResource Remove="shaders/**" />

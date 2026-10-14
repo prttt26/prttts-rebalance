@@ -23,7 +23,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ./workshop/Prepare-Release.p
 
 ## 项目资料
 
-- [发布及更新流程](workshop/RELEASE.md)
 - [卡牌改动列表](CARD_CHANGES.md)
+- [发布及更新流程](workshop/RELEASE.md)
 
 公开源码未授予额外的开源许可；第三方与游戏素材的权利归各自权利人。

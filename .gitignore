@@ -21,3 +21,6 @@ Steamworks.NET.dll
 mod_id.txt
 mod-uploader.log
 .sts2-workshop-uploader/
+
+# Private development material stays in sts_mod.
+/dev/

@@ -19,7 +19,7 @@ public static class CardPoolPatches
     [HarmonyPatch(typeof(IroncladCardPool), "GenerateAllCards")]
     private static class Ironclad
     {
-        // cards.yaml 中战士池 op: remove 的条目。
+        // dev/cards.yaml 中战士池 op: remove 的条目。
         // 先古卡也在角色池里（Break 的 Rarity 就是 CardRarity.Ancient），所以一并在这里删。
         private static readonly HashSet<Type> Removed =
         [
@@ -78,7 +78,7 @@ public static class CardPoolPatches
     {
         private static readonly HashSet<Type> Removed =
         [
-            // 强撑：move 到战士池（cards.yaml op: move），机器人这侧对应移除。
+            // 强撑：move 到战士池（dev/cards.yaml op: move），机器人这侧对应移除。
             // 入战士池在 MainFile.Initialize，跨池带来的卡图/边框问题见 FightThroughPatch。
             typeof(FightThrough),
 

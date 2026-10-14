@@ -30,7 +30,7 @@ public static class AncientRelicPatch
     /// 猎人/储君那几条（Neutralize→Suppress、Unleash→Protector、FallingStar→MeteorShower）
     /// 目标都没动过，保持原样。
     ///
-    /// 机器人的替代卡启用的是自举循环；备用选项「递归矩阵」未进卡池，存档在 Shelved/RecursiveMatrix/。
+    /// 机器人的替代卡启用的是自举循环；备用选项「递归矩阵」未进卡池，存档在 dev/Shelved/RecursiveMatrix/。
     /// </summary>
     [HarmonyPatch(typeof(ArchaicTooth), "TranscendenceUpgrades", MethodType.Getter)]
     private static class Transcendence

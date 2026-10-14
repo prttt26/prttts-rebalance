@@ -12,7 +12,7 @@ namespace Rebalance_by_sts1_revival.Rebalance_by_sts1_revivalCode.Cards.Defect;
 /// 自举循环 — 机器人先古
 /// 1(0)费技能：触发最右侧充能球的被动，激发它 2 次，然后生成一个刚才被激发的充能球。
 ///
-/// 用来替代被移除的「四重释放」(Quadcast)。备用选项「递归矩阵」未启用，存档在 Shelved/RecursiveMatrix/。
+/// 用来替代被移除的「四重释放」(Quadcast)。备用选项「递归矩阵」未启用，存档在 dev/Shelved/RecursiveMatrix/。
 ///
 /// ⚠️ 「最右侧」对应的是 OrbCmd.EvokeNext（内部取 `Orbs.First()`），不是 EvokeLast。
 /// 依据：四重释放的中文描述就是「激发最右侧充能球4次」，而 Quadcast 的实现用的正是 EvokeNext。

@@ -11,7 +11,7 @@ using MegaCrit.Sts2.Core.Models.Powers;
 namespace Rebalance_by_sts1_revival.Rebalance_by_sts1_revivalCode.Patches.Defect;
 
 /// <summary>
-/// 偏差认知 (BiasedCognition) — op: modify，机器人先古（cards.yaml 的 defect_bias 方案1）
+/// 偏差认知 (BiasedCognition) — op: modify，机器人先古（dev/cards.yaml 的 defect_bias 方案1）
 ///   原效果：获得 4(5) 集中，**每**回合开始时失去 1 集中
 ///   新效果：获得 4(5) 集中，**若上一回合未曾失去集中**，回合开始时才失去 1 集中
 ///
