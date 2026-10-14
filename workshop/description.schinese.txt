@@ -1,0 +1,13 @@
+Energy & Deck Cycling
+
+以能量经济和牌组运转为重点的个人平衡方案。
+
+调整部分卡牌和卡池，涉及费用、能量获取、抽牌、弃牌、回收和跨回合资源安排；同时引入部分《杀戮尖塔1》经典卡牌及新设计卡牌，让资源投入与收益更协调，为构筑提供更多运转方式。
+
+需要订阅并启用 BaseLib。提供简体中文和英文卡牌文本。
+以游戏主分支（public）为设计基准。测试分支（public-beta）暂不保证符合预期：独门技术与燃料沿用基础游戏效果，测试分支对它们的修改可能影响本 Mod 的预期玩法。工坊不设置分支下载限制。
+本 Mod 会改变游戏玩法，与修改相同卡牌、卡池或遗物的其他 Mod 同时使用时可能产生冲突。
+当前版本：v0.1.0。欢迎反馈卡牌效果、描述和兼容性问题。
+
+[url=https://github.com/prttt26/prttts-rebalance]GitHub 源码与问题反馈[/url]
+[url=https://github.com/prttt26/prttts-rebalance/blob/main/CARD_CHANGES.md]完整卡牌改动列表[/url]

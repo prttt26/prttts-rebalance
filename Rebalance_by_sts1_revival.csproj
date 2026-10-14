@@ -52,6 +52,7 @@
         <Compile Remove="shaders/**" />
         <Compile Remove="images/**" />
         <Compile Remove="dev/**" /> <!-- 开发资料及未启用设计，不参与编译 -->
+        <Compile Remove="workshop/**" /> <!-- 独立发布工具不编入游戏 Mod -->
         <EmbeddedResource Remove="dev/**" />
         <EmbeddedResource Remove="Rebalance_by_sts1_revival/**" />
         <EmbeddedResource Remove="materials/**" />

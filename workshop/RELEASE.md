@@ -8,7 +8,7 @@
 powershell -NoProfile -ExecutionPolicy Bypass -File ./workshop/Prepare-Release.ps1
 ```
 
-脚本使用已还原的 NuGet 包，生成 Release DLL、PCK 和 manifest，并填入中英工坊简介。输出在 `publish/prttts-rebalance/`，不会复制到游戏安装目录。如果本机尚未还原依赖，先执行 `dotnet restore ./Rebalance_by_sts1_revival.csproj`。
+脚本使用已还原的 NuGet 包，生成 Release DLL、PCK 和 manifest，并填入英文默认工坊简介。输出在 `publish/prttts-rebalance/`，不会复制到游戏安装目录。如果本机尚未还原依赖，先执行 `dotnet restore ./Rebalance_by_sts1_revival.csproj`。
 
 发布前用本次 Release 包在游戏中确认加载、五个角色卡池和中英文本；编译成功不能代替实机验证。manifest 的最低游戏版本是 0.107.0，BaseLib 最低版本是 3.3.6，尚未重新验证所有后续游戏版本。
 
@@ -24,9 +24,24 @@ Steam 需要运行并登录对应账号。保留上传器生成的 `mod_id.txt`�
 
 官方工具及格式说明：https://github.com/megacrit/sts2-mod-uploader
 
-v0.1.0 已于 2026-10-13 通过官方上传器上传：[创意工坊条目](https://steamcommunity.com/sharedfiles/filedetails/?id=3819462077)。上传器返回成功并添加 BaseLib 依赖；本次未完成发布包实机复测。`description.txt` 是工坊简介的来源，修改后重新运行打包脚本。
+v0.1.0 已于 2026-10-13 通过官方上传器上传：[创意工坊条目](https://steamcommunity.com/sharedfiles/filedetails/?id=3819462077)。上传器返回成功并添加 BaseLib 依赖；本次未完成发布包实机复测。`description.english.txt` 和 `description.schinese.txt` 分别是英文和简体中文简介来源。官方上传器不提供语言字段；上传文件后需运行下述工具更新两种语言。
 
 工坊条目 ID 为 `3819462077`。新克隆仓库首次准备更新时，把该数字写入生成的官方工作区 `mod_id.txt`，再运行上传器，以更新已有条目。
+
+## 分语言更新简介
+
+官方工具上传内容后，在整体仓库根目录执行：
+
+```powershell
+dotnet build ./workshop/LocalizedMetadata/LocalizedMetadata.csproj
+dotnet ./workshop/LocalizedMetadata/bin/Debug/net10.0/LocalizedMetadata.dll ./workshop
+```
+
+独立公开仓库中移除命令里的 `sts2/` 前缀。此辅助工具需要 .NET 10 SDK、运行中的 Steam 和本机游戏的 Steamworks.NET 程序集；非默认游戏路径通过构建参数 `-p:SteamDataDir="游戏数据目录"` 指定。
+
+工具固定更新条目 `3819462077`，先核对游戏与所有者，再分别设置 `english` 和 `schinese` 的标题及描述，并读取验证。它不上传游戏文件，不改变依赖、可见性或分支范围。两份简介使用 Steam BBCode 链接。2026-10-13 两种语言均上传并读回验证成功。
+
+使用游戏内上传 Mod 时，将两份简介分别填入其对应语言记录；不要再把中英文本合并成一个描述。
 
 ## 备用：游戏内 Workshop Uploader
 
@@ -41,7 +56,7 @@ v0.1.0 已于 2026-10-13 通过官方上传器上传：[创意工坊条目](http
 | 字段 | 内容或来源 |
 | --- | --- |
 | 标题 | `prttt's Rebalance` |
-| 简介 | `workshop/description.txt`，可直接粘贴中英合并文本 |
+| 简介 | `workshop/description.english.txt` 与 `description.schinese.txt`，分别填写对应语言简介 |
 | 主预览图 | `workshop/image.png` |
 | 必需工坊项目 | BaseLib，工坊 ID `3737335127` |
 | 可见性 | public（公开） |

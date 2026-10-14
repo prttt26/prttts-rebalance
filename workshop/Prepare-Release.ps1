@@ -23,7 +23,7 @@ foreach ($extension in @('dll', 'pck')) {
 }
 Copy-Item -LiteralPath (Join-Path $projectRoot "$modId.json") -Destination $content -Force
 $config = Get-Content (Join-Path $PSScriptRoot 'workshop.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-$config.description = (Get-Content (Join-Path $PSScriptRoot 'description.txt') -Raw -Encoding UTF8).Trim()
+$config.description = (Get-Content (Join-Path $PSScriptRoot 'description.english.txt') -Raw -Encoding UTF8).Trim()
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 [IO.File]::WriteAllText((Join-Path $workspace 'workshop.json'), ($config | ConvertTo-Json -Depth 10), $utf8)
 Copy-Item -LiteralPath (Join-Path $PSScriptRoot 'image.png') -Destination $workspace -Force

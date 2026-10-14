@@ -1,0 +1,13 @@
+Energy & Deck Cycling
+
+An opinionated rebalance focused on energy economy and deck cycling.
+
+Adjusts selected cards and card pools: costs, energy generation, draw, discard, retrieval, and resources carried between turns. Includes selected returning Slay the Spire 1 cards and new designs, aiming for more coherent resource costs and rewards and more ways to keep a deck moving.
+
+Requires BaseLib. Includes Simplified Chinese and English card text.
+Designed around the main (public) branch. The public-beta branch may differ from the intended balance: Expertise and Fuel use base-game behavior, so beta changes to these cards can affect the intended gameplay. Workshop downloads are not restricted by branch.
+This mod affects gameplay and may conflict with other mods that change the same cards, pools, or relics.
+Current version: v0.1.0. Feedback on card behavior, text, and compatibility is welcome.
+
+[url=https://github.com/prttt26/prttts-rebalance]Source code and issue tracker[/url]
+[url=https://github.com/prttt26/prttts-rebalance/blob/main/CARD_CHANGES.md]Full card changes (Chinese)[/url]
