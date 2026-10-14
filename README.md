@@ -24,8 +24,6 @@ powershell -NoProfile -ExecutionPolicy Bypass -File ./workshop/Prepare-Release.p
 ## 项目资料
 
 - [发布及更新流程](workshop/RELEASE.md)
-- [本机环境与实现记录](SETUP.md)
-- [设计计划](杀戮尖塔2%20Mod%20制作计划.md)
-- [测试方案](测试方案.md)
+- [卡牌改动列表](CARD_CHANGES.md)
 
-`Shelved/` 保存暂未启用的设计，不参与编译。公开源码未授予额外的开源许可；第三方与游戏素材的权利归各自权利人。
+公开源码未授予额外的开源许可；第三方与游戏素材的权利归各自权利人。
