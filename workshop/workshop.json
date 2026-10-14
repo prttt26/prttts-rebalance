@@ -2,7 +2,7 @@
   "title": "prttt's Rebalance",
   "description": "",
   "visibility": "public",
-  "changeNote": "v0.1.0 — Initial testing release. Energy & Deck Cycling.",
+  "changeNote": "Description update: main-branch balance scope, beta caveats, and GitHub links. No gameplay changes.",
   "tags": [],
   "dependencies": [3737335127],
   "contentDescriptors": []

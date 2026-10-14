@@ -7,8 +7,12 @@ Energy & Deck Cycling
 目标是让资源投入与收益更协调，为构筑提供更多运转方式。塔1卡牌回归是其中一部分，亡灵契约师与储君的调整也是本 Mod 的重要内容。
 
 需要订阅并启用 BaseLib。提供简体中文和英文卡牌文本。
+以游戏主分支（public）为设计基准。测试分支（public-beta）暂不保证符合预期：独门技术与燃料沿用基础游戏效果，测试分支对它们的修改可能影响本 Mod 的预期玩法。工坊不设置分支下载限制。
 本 Mod 会改变游戏玩法。与修改相同卡牌、卡池或遗物的其他 Mod 同时使用时，可能产生冲突。
 首个测试版本：v0.1.0。欢迎反馈卡牌效果、描述和兼容性问题。
+
+[url=https://github.com/prttt26/prttts-rebalance]GitHub 源码与问题反馈[/url]
+[url=https://github.com/prttt26/prttts-rebalance/blob/main/CARD_CHANGES.md]完整卡牌改动列表[/url]
 
 An opinionated rebalance focused on energy economy and deck cycling.
 
@@ -17,5 +21,9 @@ Adjusts selected cards and card pools for the Ironclad, Silent, Defect, Necrobin
 The goal is to make resource costs and rewards more coherent and provide more ways to keep a deck moving. Returning cards are one part of the mod; Necrobinder and Regent adjustments are also a substantial part of its scope.
 
 Requires BaseLib. Includes Simplified Chinese and English card text.
+Designed around the main (public) branch. The public-beta branch may differ from the intended balance: Expertise and Fuel use base-game behavior, so beta changes to these cards can affect the intended gameplay. Workshop downloads are not restricted by branch.
 This mod affects gameplay and may conflict with other mods that change the same cards, pools, or relics.
 Initial testing release: v0.1.0. Feedback on card behavior, text, and compatibility is welcome.
+
+[url=https://github.com/prttt26/prttts-rebalance]Source code and issue tracker[/url]
+[url=https://github.com/prttt26/prttts-rebalance/blob/main/CARD_CHANGES.md]Full card changes (Chinese)[/url]
