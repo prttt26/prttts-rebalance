@@ -1,0 +1,14 @@
+﻿{
+  "id": "Rebalance_by_sts1_revival",
+  "name": "prttt's Rebalance",
+  "author": "prttt26",
+  "description": "Energy & Deck Cycling — card and card-pool adjustments across all five characters, focused on energy economy and deck cycling, with selected returning cards from Slay the Spire 1.",
+  "version": "v0.1.0",
+  "min_game_version": "0.107.0",
+  "has_pck": true,
+  "has_dll": true,
+  "dependencies": [
+    {"id": "BaseLib", "min_version": "3.3.6"}
+  ],
+  "affects_gameplay": true
+}

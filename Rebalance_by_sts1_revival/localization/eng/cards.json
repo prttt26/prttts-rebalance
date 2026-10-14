@@ -1,0 +1,79 @@
+{
+  "REBALANCE_BY_STS1_REVIVAL-AGGREGATE.title": "Aggregate",
+  "REBALANCE_BY_STS1_REVIVAL-AGGREGATE.description": "#Gain [E] for every {C} cards in your draw pile.",
+
+  "REBALANCE_BY_STS1_REVIVAL-BERSERK.title": "Berserk",
+  "REBALANCE_BY_STS1_REVIVAL-BERSERK.description": "#Gain {VulnerablePower} *Vulnerable*. At the start of your turn, gain [E].",
+
+  "REBALANCE_BY_STS1_REVIVAL-MAGNETISM.title": "Magnetism",
+  "REBALANCE_BY_STS1_REVIVAL-MAGNETISM.description": "#At the start of each turn, add {C} random Colorless cards to your hand.",
+
+  "REBALANCE_BY_STS1_REVIVAL-MADNESS.title": "Madness",
+  "REBALANCE_BY_STS1_REVIVAL-MADNESS.description": "#A random card in your hand costs *0* for the rest of combat.",
+
+  "REBALANCE_BY_STS1_REVIVAL-CHRYSALIS.title": "Chrysalis",
+  "REBALANCE_BY_STS1_REVIVAL-CHRYSALIS.description": "#Add {C} random Skills into your draw pile. They cost *0* this combat.",
+
+  "REBALANCE_BY_STS1_REVIVAL-DOPPELGANGER.title": "Doppelganger",
+  "REBALANCE_BY_STS1_REVIVAL-DOPPELGANGER.description": "Next turn, gain {IfUpgraded:show:X+1|X} Energy and draw {IfUpgraded:show:X+1|X} cards.",
+
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM.title": "Deva Form",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM.description": "#At the end of your turn, gain \"At the start of your turn, gain [E].\"",
+
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR.title": "Self Repair",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR.description": "#At the end of combat, heal {SelfRepairPower} HP.",
+
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY.title": "Master Reality",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY.description": "#Whenever a card is created during combat, upgrade it.",
+
+  "REBALANCE_BY_STS1_REVIVAL-DAY_NIGHT_CYCLE.title": "Day-Night Cycle",
+  "REBALANCE_BY_STS1_REVIVAL-DAY_NIGHT_CYCLE.description": "Swap your {energyPrefix:energyIcons(1)} and {singleStarIcon}.",
+
+  "REBALANCE_BY_STS1_REVIVAL-FOLLOW_UP.title": "Follow Up",
+  "REBALANCE_BY_STS1_REVIVAL-FOLLOW_UP.description": "#Deal {D} damage. Forge {Forge}. If you played a *Sovereign Blade* this turn, gain [E] and draw 1 card.",
+
+  "REBALANCE_BY_STS1_REVIVAL-COLLECT_SOULS.title": "Collect Souls",
+  "REBALANCE_BY_STS1_REVIVAL-COLLECT_SOULS.description": "{IfUpgraded:show:Put as many [gold]Souls[/gold] as possible from your discard and draw piles into your hand, then add another Soul to your hand.|Put as many [gold]Souls[/gold] as possible from your discard and draw piles into your hand.}",
+
+  "REBALANCE_BY_STS1_REVIVAL-IGNITE_SOUL.title": "Ignite Soul",
+  "REBALANCE_BY_STS1_REVIVAL-IGNITE_SOUL.description": "Gain {Block} [gold]Block[/gold]. Turn all [gold]Souls[/gold] in your hand into {IfUpgraded:show:[gold]Fuel+[/gold]|[gold]Fuel[/gold]}.",
+
+  "REBALANCE_BY_STS1_REVIVAL-RECURSION.title": "Recursion",
+  "REBALANCE_BY_STS1_REVIVAL-RECURSION.description": "#Evoke your rightmost orb, then Channel a copy of it.",
+
+  "REBALANCE_BY_STS1_REVIVAL-CONSUME.title": "Consume",
+  "REBALANCE_BY_STS1_REVIVAL-CONSUME.description": "#Lose 1 Orb slot. Gain {FocusPower} *Focus*.",
+
+  "REBALANCE_BY_STS1_REVIVAL-FISSION.title": "Fission",
+  "REBALANCE_BY_STS1_REVIVAL-FISSION.description": "#-Remove-+Evoke+ all of your orbs. For each, gain [E] and draw 1 card.",
+
+  "REBALANCE_BY_STS1_REVIVAL-DARK_GATHER.title": "Dark Gather",
+  "REBALANCE_BY_STS1_REVIVAL-DARK_GATHER.description": "#Channel 1 *Dark* orb, then trigger the passive of all Dark orbs X times.",
+
+  "REBALANCE_BY_STS1_REVIVAL-BOOTSTRAP_LOOP.title": "Bootstrap Loop",
+  "REBALANCE_BY_STS1_REVIVAL-BOOTSTRAP_LOOP.description": "#Trigger the passive of your rightmost orb, Evoke it twice, then Channel a copy of it.",
+
+  "REBALANCE_BY_STS1_REVIVAL-CORE_SURGE.title": "Core Surge",
+  "REBALANCE_BY_STS1_REVIVAL-CORE_SURGE.description": "#Gain {ArtifactPower} *Artifact*.",
+
+  "REBALANCE_BY_STS1_REVIVAL-UNLOAD.title": "Unload",
+  "REBALANCE_BY_STS1_REVIVAL-UNLOAD.description": "#Deal {D} damage. Discard your hand, then draw -that many-+that many plus one+ cards.",
+
+  "REBALANCE_BY_STS1_REVIVAL-PAWN_SACRIFICE.title": "Pawn Sacrifice",
+  "REBALANCE_BY_STS1_REVIVAL-PAWN_SACRIFICE.description": "#Discard 2 cards. Next turn, gain [E?].",
+
+  "REBALANCE_BY_STS1_REVIVAL-REAPER.title": "Reaper",
+  "REBALANCE_BY_STS1_REVIVAL-REAPER.description": "#Deal {D} damage to ALL enemies. Heal HP equal to unblocked damage dealt.",
+
+  "REBALANCE_BY_STS1_REVIVAL-SEARING_BLOW.title": "Searing Blow",
+  "REBALANCE_BY_STS1_REVIVAL-SEARING_BLOW.description": "#Deal {D} damage. Can be upgraded any number of times.",
+
+  "REBALANCE_BY_STS1_REVIVAL-RECKLESS_CHARGE.title": "Reckless Charge",
+  "REBALANCE_BY_STS1_REVIVAL-RECKLESS_CHARGE.description": "#Deal {D} damage. Shuffle a *Dazed* into your draw pile.",
+
+  "REBALANCE_BY_STS1_REVIVAL-WILD_STRIKE.title": "Wild Strike",
+  "REBALANCE_BY_STS1_REVIVAL-WILD_STRIKE.description": "#Deal {D} damage. Shuffle a *Wound* into your draw pile.",
+
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND.title": "Talk to the Hand",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND.description": "#Deal {D} damage. Whenever you attack this enemy, gain {TalkToTheHandPower} *Block*."
+}

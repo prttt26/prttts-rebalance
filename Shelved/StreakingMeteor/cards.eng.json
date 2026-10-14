@@ -1,0 +1,23 @@
+{
+  "REBALANCE_BY_STS1_REVIVAL-STREAKING_METEOR.title": "Streaking Meteor",
+  "REBALANCE_BY_STS1_REVIVAL-STREAKING_METEOR.description": "Triggers when drawn and stays in your hand. Choose 1 of {IfUpgraded:show:3|2} random options.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORESIGHT.title": "Portent",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORESIGHT.description": "#*Foresight* {C}: Look at the top {C} cards of your draw pile and discard any number of them.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORESIGHT.selectionScreenPrompt": "Discard any number",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_ENERGY.title": "Starfire",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_ENERGY.description": "#Gain [E?].",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_STARS.title": "Starfall",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_STARS.description": "#Gain {Stars:starIcons()} *Stars*.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_DRAW.title": "Daybreak",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_DRAW.description": "#Draw {C} cards.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_CYCLE.title": "Revolution",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_CYCLE.description": "#Draw 2 cards, then discard 2 cards.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_EXHAUST.title": "Burnout",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_EXHAUST.description": "#Exhaust up to 1 card in your hand.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORGE.title": "Tempering",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORGE.description": "#Forge {Forge}.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_PLATING.title": "Scaling",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_PLATING.description": "#Gain {PlatingPower} *Plated Armor*.",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_BLUR.title": "Lingering",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_BLUR.description": "#Gain {BlurPower} *Blur* (Block is not removed at end of turn)."
+}

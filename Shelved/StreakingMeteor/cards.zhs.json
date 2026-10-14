@@ -1,0 +1,23 @@
+{
+  "REBALANCE_BY_STS1_REVIVAL-STREAKING_METEOR.title": "划空流星",
+  "REBALANCE_BY_STS1_REVIVAL-STREAKING_METEOR.description": "抽到时触发其效果，且本卡留在手牌中。从 {IfUpgraded:show:3|2} 个随机选项中选择 1 个触发。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORESIGHT.title": "预兆",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORESIGHT.description": "#*预见* {C}：查看抽牌堆顶的 {C} 张牌，可弃掉其中任意张。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORESIGHT.selectionScreenPrompt": "选择要弃掉的牌（可不选）",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_ENERGY.title": "星火",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_ENERGY.description": "#获得 [E?]。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_STARS.title": "拾星",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_STARS.description": "#获得 {Stars:starIcons()} 点*辉星*。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_DRAW.title": "启明",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_DRAW.description": "#抽 {C} 张牌。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_CYCLE.title": "流转",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_CYCLE.description": "#抽 2 张牌，然后弃 2 张牌。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_EXHAUST.title": "焚尽",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_EXHAUST.description": "#选择至多 1 张手牌消耗。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORGE.title": "淬火",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_FORGE.description": "#铸造 {Forge}。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_PLATING.title": "覆鳞",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_PLATING.description": "#获得 {PlatingPower} 层*覆甲*。",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_BLUR.title": "滞影",
+  "REBALANCE_BY_STS1_REVIVAL-METEOR_BLUR.description": "#获得 {BlurPower} 层*残影*（本回合结束时保留护甲）。"
+}

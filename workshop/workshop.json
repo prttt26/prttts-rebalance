@@ -1,0 +1,9 @@
+{
+  "title": "prttt's Rebalance",
+  "description": "",
+  "visibility": "public",
+  "changeNote": "v0.1.0 — Initial testing release. Energy & Deck Cycling.",
+  "tags": [],
+  "dependencies": [3737335127],
+  "contentDescriptors": []
+}

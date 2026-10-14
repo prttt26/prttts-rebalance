@@ -1,0 +1,1092 @@
+# 塔2 Mod 卡牌数据（结构化）
+#
+# 本文件是「是什么」的载体：可直接对照写 C# 卡类。
+# 「为什么」（设计理由、价值论推导）仍在《杀戮尖塔2 Mod 制作计划.md》，两者不重复。
+#
+# 数据全部转录自该设计文档（2026-07-17 版本），未做任何数值改动。
+# 如与设计文档冲突，以设计文档为准并回来修正本文件。
+
+meta:
+  source: 杀戮尖塔2 Mod 制作计划.md
+  transcribed: 2026-07-17
+
+# ── schema 说明 ──────────────────────────────────────────────
+# op:      add    新卡进池（塔1回归 / 新设计）
+#          remove 基础游戏卡移出卡池
+#          modify 改基础游戏卡的数值/效果
+#          move   卡在稀有度/角色间移动（实现上 = remove + add，故单列）
+#          pin    版本锁定：现在不改，但记下当前官方版本；官方之后改了这张卡，本 mod 要回滚到这里记的版本
+# rarity:  common(普通) / uncommon(罕见) / rare(稀有) / ancient(先古)
+# pool:    colorless / ironclad / silent / defect / necrobinder(亡灵契约师)
+#          / prince(储君) / special
+# cost:    数字或 "X"；升级后变化记在 upgrade
+# type:    attack / skill / power
+#
+# ⚠️ 词条的两个字段，务必区分（设计文档约定：括号 = 升级效果）：
+#   keywords          基础词条，卡未升级时就有。文档中【不带括号】，如「触不可及：奇巧，...」
+#   upgrade_keywords  升级后【获得】的词条。文档中【带括号】，如「核心电泳：（固有）」
+#   升级后【去除】词条（如「虚无（不虚无）」）写成 keywords: [虚无] + upgrade: 去除虚无
+# 混淆 keywords 与 upgrade_keywords 会让卡在未升级时就带上不该有的词条。
+# status:  confirmed(默认，不写) / undecided(待定) / options(有多个备选方案)
+#          / shelved(暂时放弃 或 备用选项：保留设计记录，但未启用、不在卡池里，统计卡数时不计)
+# impl_note: 实现时踩过的坑 / 容易读错的地方。写给下一个照着实现的人看。
+#
+# ⚠️ effect 写法铁律：**主语和受益方必须写出来，不许靠上下文猜**。
+#   实机踩过的例子：「这个敌人每次被攻击时获得2格挡」——「获得」的主语是谁？
+#   按字面读成敌人加甲，实现出来是一张纯负面卡；塔1原意是玩家获得格挡。
+#   同类还有「获得2层易伤」（给自己还是给敌人）。
+#   拿不准就用【】把主语框出来，如「此后每当【你】攻击该敌人时，【你】获得2点格挡」。
+#
+# ⚠️ 数值随回合变化的，必须写清是**恒定**还是**递增**，并给出前几回合的实际序列。
+#   「回合结束时获得"回合开始时获得1费"」读起来像恒定+1，实际设计是递增。
+# ────────────────────────────────────────────────────────────
+
+# 通用词条（供实现时查阅，非卡牌）
+keywords_glossary:
+  固有: 战斗开始时出现在手牌中，占用第一回合抽牌
+  虚无: 回合结束时如果在手牌中，消耗
+  消耗: 打出后进入消耗堆（而不是弃牌堆）
+  奇巧: 猎人专属机制，从手牌中被丢弃时打出
+  保留: 回合结束时留在手牌中而不是进入弃牌堆
+  恢复性: >
+    战斗中随机产生卡牌效果不会产生，防止故意延长战斗过于有利。
+    实现：override `CanBeGeneratedInCombat => false`（CardModel 的虚属性，**不是** CardKeyword，
+    枚举里没有这一项）。CardFactory.FilterForCombat 按它过滤；卡牌奖励/商店/转化不受影响。
+  免费: 费用和辉星消耗均变为0，对X费无效（为储君的辉星消耗重新适配的「变为0费」）
+
+# 参考用的既有卡/机制（非本 mod 改动对象，实现时需要查阅）
+reference:
+  - name_zh: 重振精神
+    pool: ironclad
+    rarity: uncommon
+    type: skill
+    cost: 1
+    effect: 消耗手牌中所有非攻击牌，每消耗1张获得5(7)格挡
+    note: 战士加入状态产生卡的核心动机——让这张不再尴尬
+  - name_zh: 痛击
+    pool: ironclad
+    rarity: ancient
+    cost: 2
+    effect: 8（10）伤，给予2（3）层易伤
+    note: 会被「古老牙齿」遗物取代
+  - name_zh: 双重释放
+    pool: defect
+    rarity: ancient
+    cost: 1
+    effect: （0）费，激发最右侧充能球2次
+    note: 会被「古老牙齿」遗物取代
+  - name_zh: 环绕轨道
+    pool: prince
+    type: power
+    cost: 2
+    effect: （1）费，每消耗4费时获得1费
+  - name_zh: 君王之剑
+    pool: prince
+    kind: token
+    cost: 2
+    effect: （1）费衍生卡，保留，10伤，第一次铸造时加入手牌
+  - name_zh: 铸造
+    pool: prince
+    kind: mechanic
+    effect: 君王之剑伤害增加
+  - name_zh: 奥斯提
+    pool: necrobinder
+    kind: mechanic
+    effect: 在你的格挡之后阻挡攻击。血量归0会死亡（并因此失去所有最大生命值）
+  - name_zh: 召唤
+    pool: necrobinder
+    kind: mechanic
+    effect: 奥斯提获得最大生命值（会同时增加当前血量）。初始遗物为回合开始时召唤1
+  - name_zh: 灵魂
+    pool: necrobinder
+    kind: token
+    cost: 0
+    type: skill
+    effect: 抽2（3）张牌，消耗
+    note: 亡灵契约师核心过牌，大量卡可向抽牌堆/弃牌堆塞入
+  - name_zh: 燃料
+    pool: necrobinder
+    kind: token
+    cost: 0
+    type: skill
+    effect: 获得1费，抽1（2）张牌，消耗
+  - name_zh: 奇迹
+    pool: necrobinder
+    kind: token
+    cost: 0
+    type: skill
+    effect: 保留，获得1（2）费，消耗
+    note: 观者衍生卡，目前不存在于塔2中，需新增
+  - name_zh: 冷光
+    pool: necrobinder
+    kind: token
+    cost: 0
+    type: skill
+    effect: 保留，获得2（3）费，消耗
+    note: 先古遗物「放电异虾」的衍生卡，可在此复用
+
+# 遗物相关提醒（实现时影响卡池）
+relics_note:
+  - name_zh: 古老牙齿
+    kind: ancient_relic
+    effect: 将一张角色专属初始卡变化为特定的先古卡
+  - name_zh: 尘封魔典
+    kind: ancient_relic
+    effect: 将一张先古卡（必须是能力卡）加入卡组
+  - name_zh: 原初之爪
+    kind: ancient_relic
+    origin: 瓦库
+    effect: 拾起时，将2张随机诅咒牌和3张许愿加入你的牌组
+
+cards:
+
+  # ═══════════════════════════════════════════════════════
+  # 1. 无色卡（colorless）
+  # ═══════════════════════════════════════════════════════
+
+  - name_zh: 天人形态
+    pool: colorless
+    rarity: rare
+    op: add
+    origin: sts1_watcher
+    cost: 3
+    type: power
+    keywords: [虚无]
+    effect: >
+      【你】的每个回合结束时，获得「每回合开始时获得1费」。
+      是递增不是恒定+1：每回合能量依次为 3（打出当回合，不加费）→ 4 → 5 → 6 …
+    upgrade: 去除虚无
+    impl_note: >
+      双能力实现：DevaFormPower（引擎）在回合结束时叠 1 层基础游戏的 PyrePower
+      （薪火之源的能力，ModifyMaxEnergy 永续加费），与狂暴/薪火之源共用同一个计数器。
+      「回合结束时获得…」单看容易读成恒定+1，所以 effect 里必须带着序列写。
+      ⚠️ 打出时**不要**再预给一层 PyrePower：回合结束叠层 + 预给层会变成 3 → 5 → 6，快一拍。
+      **不是** EnergyNextTurnPower（那个是一次性的）。
+
+  - name_zh: 双重存在
+    pool: colorless
+    rarity: rare
+    op: add
+    origin: sts1_silent
+    cost: X
+    type: skill
+    keywords: [消耗]
+    effect: 下回合获得X费，抽X张
+    upgrade: X+1（费与抽牌均+1）
+
+  - name_zh: 操控现实
+    pool: colorless
+    rarity: rare
+    op: add
+    origin: sts1_watcher
+    cost: 1
+    type: power
+    effect: 战斗中所有产生的卡升级
+    upgrade: 费用降为0
+
+  - name_zh: 自我修复
+    pool: colorless
+    rarity: rare
+    op: add
+    origin: sts1_defect
+    cost: 1
+    type: power
+    keywords: [恢复性]
+    effect: 战斗结束时，你回复9点生命（逃跑也触发；仅战败/死亡不触发）
+    upgrade: 12点生命
+    note: 相对塔1数值增强
+    impl_note: >
+      「恢复性」不是 CardKeyword（枚举里没有），而是 CardModel 的虚属性
+      `public override bool CanBeGeneratedInCombat => false;`——
+      CardFactory.FilterForCombat 会按它过滤，于是结茧/羽化/磁力/发现 等
+      战斗内生成效果都不会产出此卡。卡牌奖励、商店、转化不受影响。
+      回血挂 AfterCombatEnd + `if (Owner.IsDead) return;`，**不是** AfterCombatVictory——
+      后者只在打赢时触发，会把逃跑一起漏掉；设计要求逃跑照给，只有战败不给。
+
+  - name_zh: 结茧
+    pool: colorless
+    rarity: rare
+    op: add
+    origin: sts1_colorless_rare
+    cost: 2
+    type: skill
+    keywords: [消耗]
+    effect: 向抽牌堆加入3张技能卡，它们本场战斗免费
+    upgrade: 5张
+    note: 现为《尖塔2》事件卡
+
+  - name_zh: 羽化
+    pool: colorless
+    rarity: rare
+    op: add
+    origin: sts1_colorless_rare
+    cost: 2
+    type: skill
+    keywords: [消耗]
+    effect: 向抽牌堆加入3张攻击卡，它们本场战斗免费
+    upgrade: 5张
+    note: 现为《尖塔2》事件卡
+
+  - name_zh: 汇集
+    pool: colorless
+    rarity: uncommon
+    op: add
+    origin: sts1_defect
+    cost: 1
+    type: skill
+    effect: 抽牌堆每有4张卡获得1费
+    upgrade: 每3张
+
+  - name_zh: 狂暴
+    pool: colorless
+    rarity: uncommon
+    op: add
+    origin: sts1_ironclad
+    cost: 0
+    type: power
+    effect: 你自己获得2层易伤；此后你每回合开始时获得的能量永久+1（恒定，不递增）
+    upgrade: 改为你自己只获得1层易伤（代价变小）
+    impl_note: >
+      易伤是施加给自己的代价，不是给敌人的。加费与天人形态同为永续，
+      故同样用 ModifyMaxEnergy 而非 PlayerCmd.GainEnergy——
+      后者会走 Hook.ModifyEnergyGain，被 NoEnergyGainPower 之类拦掉。
+
+  - name_zh: 以手拒之
+    pool: colorless
+    rarity: uncommon
+    op: add
+    origin: sts1_watcher
+    cost: 1
+    type: attack
+    keywords: [消耗]
+    effect: 造成5点伤害；此后每当【你】用攻击牌攻击该敌人时，【你】获得2点格挡
+    upgrade: 7点伤害，3点格挡
+    impl_note: >
+      格挡收益方是玩家，不是被标记的敌人（塔1原文 "Whenever you attack this enemy,
+      gain 2 Block"）。原表述「这个敌人每次被攻击时获得2格挡」主语有歧义，
+      按字面读会实现成给敌人加甲，那这张就成了纯负面卡。
+      多段攻击逐段触发；非攻击牌伤害（中毒/灼烧）不触发。
+
+  - name_zh: 疯狂
+    pool: colorless
+    rarity: uncommon
+    op: add
+    origin: sts1_colorless_uncommon
+    cost: 1
+    type: skill
+    keywords: [消耗]
+    effect: 使手牌中一张随机卡本场战斗免费（免费＝费用与辉星消耗均为0）
+    upgrade: 费用降为0
+    selection_rules:
+      排除: |
+        - 不可打出的卡（免费了也打不出来）
+        - X 费卡（吃的是当前全部能量，「变0费」对它无效）
+        - 本来就是 0 费 0 辉星的卡（没有收益可拿）
+      优先级: |
+        1. 此刻真的还要花费的卡
+        2. 「临时0费」的卡——转成永久0费仍有价值，但不如省下一张全价卡，故后置（同塔1取舍）
+      无候选时: 照常打出并消耗，无事发生
+    impl_note: >
+      「是否已经免费」用现成的 `CardModel.CostsEnergyOrStars(includeGlobalModifiers: true)`,
+      其 XML 注释明确写了就是给这类效果用的；且它内部 `!EnergyCost.CostsX` 分支
+      使 X 费卡也返回 false，一次调用同时覆盖「已免费」与「X 费」两个排除条件。
+      区分「临时0费 vs 本来就0费」要看**永久基础值**：`EnergyCost.Canonical` 与
+      `BaseStarCost`（后者默认 -1 表示无辉星消耗，故用 > 0 判断）。
+
+  - name_zh: 磁力
+    pool: colorless
+    rarity: uncommon
+    op: add
+    origin: sts1_colorless_rare
+    cost: 2
+    effect: 每回合向手牌中加入一张随机无色
+    upgrade: 费用降为1
+    note: 与现储君「光谱偏移」相同效果（该卡仍保留在储君罕见池）
+
+  - name_zh: 许愿
+    pool: colorless
+    rarity: ancient
+    op: modify
+    cost: 0
+    effect: 从抽牌堆选择一张卡加入手牌，消耗
+    before:
+      keywords: [消耗]
+      upgrade_keywords: [保留]
+    after:
+      keywords: [消耗]
+      upgrade_keywords: [固有]
+    change: 升级词条由「保留」改为「固有」
+    note: 来自先古遗物「原初之爪」
+
+  - name_zh: 深呼吸
+    pool: special
+    op: add
+    target_pool: 垃圾堆事件卡池
+    cost: 0
+    effect: 将弃牌堆放回抽牌堆并洗牌，抽1张牌
+    upgrade: 抽2张
+    note: 建议作为首张验证卡——效果最简单，链路最短
+
+  - name_zh: 发掘
+    pool: colorless
+    rarity: rare
+    op: add
+    status: undecided
+    cost: 1
+    keywords: [消耗]
+    effect: 从消耗牌堆选择一张卡放回手牌。无法选择同名卡
+    upgrade: 费用降为0
+    note: >
+      待定。可考虑「不可被发掘」通用机制化（但目前只有这一张，暂无必要）；
+      也可考虑改为放入弃牌堆
+
+  # ═══════════════════════════════════════════════════════
+  # 2. 战士 Ironclad
+  # 核心思路：加入状态产生卡，让「重振精神」不再尴尬
+  # ═══════════════════════════════════════════════════════
+
+  - name_zh: 无谋冲锋
+    pool: ironclad
+    rarity: common
+    op: add
+    origin: sts1_ironclad
+    cost: 0
+    type: attack
+    effect: 7伤，将一张眩晕放入抽牌堆
+    upgrade: 10伤
+
+  - name_zh: 狂野打击
+    pool: ironclad
+    rarity: common
+    op: add
+    origin: sts1_ironclad
+    cost: 1
+    type: attack
+    effect: 12伤，将一张伤口放入抽牌堆
+    upgrade: 17伤
+
+  - name_zh: 余烬
+    pool: ironclad
+    rarity: common
+    op: remove
+    cost: 2
+    type: attack
+    effect: 18（24）伤，随机消耗手牌中的一张牌
+    note: 被移除的基础游戏卡
+
+  - name_zh: 强撑
+    pool: ironclad
+    rarity: uncommon
+    op: move
+    from: {pool: defect, rarity: uncommon}
+    to: {pool: ironclad, rarity: uncommon}
+    cost: 1
+    type: skill
+    effect: 13格挡，向弃牌堆塞入两张伤口
+    upgrade: 17格挡
+    note: 从机器人卡池转移；机器人侧对应 remove
+
+  - name_zh: 灼热攻击
+    pool: ironclad
+    rarity: uncommon
+    op: add
+    origin: sts1_ironclad
+    cost: 2
+    type: attack
+    effect: 造成 12 + 0.5n² + 3.5n 伤害（n = 升级次数）
+    upgrade: 可以多次升级
+    note: 多次升级机制，实现上需确认塔2是否支持
+
+  - name_zh: 飞剑回旋镖
+    pool: ironclad
+    rarity: uncommon
+    op: move
+    from: {pool: ironclad, rarity: common}
+    to: {pool: ironclad, rarity: uncommon}
+    cost: 1
+    type: attack
+    before:
+      effect: 随机对敌人造成3点伤害3（4）次
+    after:
+      effect: 随机对敌人造成3点伤害「2 + 敌人数量」次
+      upgrade: 「2 + 敌人数量×2」次（只翻倍敌人数量那一项，不是整体翻倍）
+    note: 移入罕见卡并强化
+    impl_note: >
+      ⚠️ 原表述「次数 ×2」有歧义，曾被实现成 (2+n)×2，凭空多出 2 次。
+      正确是 2 + n×2：1个敌人时升级后 4 次（不是 6 次）。
+      「敌人数量」只算存活可命中的——GetOpponentsOf 返回对面所有生物，不过滤存活。
+
+  - name_zh: 踩踏
+    pool: ironclad
+    rarity: uncommon
+    op: remove
+    cost: 3
+    type: attack
+    effect: 对所有敌人造成12（15）点伤害。你在本回合中每打出过一张攻击牌，其耗能减少1
+
+  - name_zh: 欺凌
+    pool: ironclad
+    rarity: uncommon
+    op: remove
+    cost: 1
+    type: attack
+    effect: 造成4（6）点伤害。该敌人身上每有一层易伤就额外造成2（3）点伤害
+
+  - name_zh: 邪眼
+    pool: ironclad
+    rarity: uncommon
+    op: remove
+    cost: 1
+    type: skill
+    effect: 获得8点格挡。如果你在本回合消耗过卡牌，则额外获得8点格挡
+
+  - name_zh: 被遗忘的仪式
+    pool: ironclad
+    rarity: uncommon
+    op: modify
+    before:
+      effect: 若本回合消耗过卡牌，获得3(4)费，消耗
+    after:
+      effect: 获得5(8)格挡。此卡被消耗时获得3(4)费。若本回合消耗过卡牌，打出时自身消耗
+
+  - name_zh: 破击
+    pool: ironclad
+    rarity: ancient
+    op: remove
+    cost: 2
+    type: attack
+    effect: （1）费，造成20（30）伤害，给予5（7）层易伤
+
+  - name_zh: 死亡收割
+    pool: ironclad
+    rarity: ancient
+    op: add
+    origin: sts1_ironclad
+    cost: 2
+    type: attack
+    keywords: [消耗, 恢复性]
+    effect: 对所有敌人造成8点伤害
+    upgrade: 11伤害
+    note: 塔1原版为4（5）伤，为先古卡地位而强化
+
+  # ═══════════════════════════════════════════════════════
+  # 3. 猎人 Silent
+  # ═══════════════════════════════════════════════════════
+
+  - name_zh: 乾坤一掷
+    name_en: Unload
+    pool: silent
+    rarity: rare
+    op: add
+    origin: sts1_silent
+    cost: 1
+    type: attack
+    effect: 10伤，丢弃所有手牌，抽相同数量的卡
+    upgrade: 11伤，抽「相同数量+1」
+
+  - name_zh: 暗影步
+    pool: silent
+    rarity: rare
+    op: modify
+    cost: 1
+    type: skill
+    before:
+      effect: （0）费，丢弃所有手牌，下回合攻击伤害翻倍
+    after:
+      effect: 丢弃所有手牌，下回合攻击伤害翻倍
+      upgrade: 选择一张手牌（保留），丢弃所有其他手牌
+    change: 费用固定为1（不再降费），升级改为「可保留一张手牌」
+
+  - name_zh: 谋划专家
+    pool: silent
+    rarity: rare
+    op: remove
+    cost: 2
+    type: power
+    effect: （1）费，打出的技能牌本场战斗获得奇巧
+
+  - name_zh: 群蛇形态
+    pool: silent
+    rarity: rare
+    op: modify
+    cost: 3
+    type: power
+    before:
+      effect: 每打出一张牌，对一个随机敌人造成4（6）伤害
+    after:
+      effect: 每打出一张牌，对一个随机敌人造成4伤害
+      upgrade_keywords: [奇巧]
+    change: 伤害固定为4（取消升级的伤害提升），升级改为赋予「奇巧」词条
+
+  - name_zh: 手上技法
+    pool: silent
+    rarity: uncommon
+    op: modify
+    cost: 1
+    type: skill
+    before:
+      effect: 7（10）格挡，选择手中一张技能牌获得临时奇巧（一次性）
+    after:
+      effect: 7格挡，选择手中一张技能牌获得临时奇巧
+      upgrade: 奇巧变为永久
+    change: 格挡固定7（不再升级），升级改为「临时奇巧 → 永久奇巧」
+
+  - name_zh: 弹跳药瓶
+    pool: silent
+    rarity: uncommon
+    op: modify
+    cost: 2
+    type: skill
+    before:
+      effect: 对随机敌人施加3层毒3（4）次
+    after:
+      effect: 对随机敌人施加3层毒「2 + 敌人数量」次
+      upgrade: 「3 + 敌人数量」次
+
+  - name_zh: 独门技术
+    name_en: Expertise
+    pool: silent
+    rarity: uncommon
+    op: pin
+    pinned_at: v0.107.1  # release_info.json: commit 59260271, 2026-06-18
+    cost: 1
+    type: skill
+    effect: 抽牌，直到【你】的手牌有6张
+    upgrade: 7张
+    note: >
+      目前与官方正式版一致，本 mod 没有任何代码。
+      ⚠️ 官方测试版（beta）已经改了这张卡的效果（2026-10-12 记录），所以回滚是迟早要做的事，不是假设。
+      游戏更新后要核对这张卡：
+      费用 / 稀有度 / 6(7) 张 / 「补到N张」的结算方式 任何一项变了，就写 patch 回滚到上面的数值。
+    impl_note: >
+      锁定版本的实现（反编译自 v0.107.1）：抽 max(0, Cards - 当前手牌数) 张，
+      手牌数在打出结算时读取（本卡此时已离手，不计入）；升级为 Cards +1。
+
+  - name_zh: 袖里乾坤
+    name_en: UpMySleeve
+    pool: silent
+    rarity: uncommon
+    op: modify
+    type: skill
+    before:
+      cost: 2
+      effect: 将3张小刀加入手牌。本场战斗中此牌耗能减少1
+      upgrade: 4张小刀
+    after:
+      cost: 3
+      effect: 将3张小刀加入手牌，【你】获得1费。本场战斗中此牌耗能减少1
+      upgrade: 费用降为2（小刀数不再增加）
+    change: 涨1费并返1费；升级由「小刀+1」改为「费用-1」
+    balance_note: >
+      净耗能序列（恒定返1费，耗能每次打出递减1、下限0）：
+      原版 2 → 1 → 0 → 0 …；新版 2 → 1 → 0 → -1 → -1 …
+      前三次打出与原版完全相同，第四次起每次净赚1费——加强只落在长战斗里。
+      升级后 1 → 0 → -1 → -1 …：整条曲线提前一次打出，封顶仍是每次净赚1费。
+    impl_note: >
+      原版 OnPlay 不替换，postfix 把返回的 Task 包一层，等它跑完再 GainEnergy
+      （async 方法的 postfix 触发时原方法才跑到第一个 await）。
+
+  - name_zh: 弃子争先
+    pool: silent
+    rarity: uncommon
+    op: add
+    origin: sts1_silent
+    cost: 0
+    type: skill
+    effect: 丢弃2张手牌，下回合获2费
+    upgrade: 3费
+
+  - name_zh: 杂技
+    name_en: Acrobatics
+    pool: silent
+    rarity: common
+    op: move
+    from: {pool: silent, rarity: uncommon}
+    to: {pool: silent, rarity: common}
+    cost: 1
+    type: skill
+    effect: 抽3张牌，然后弃1张牌
+    upgrade: 抽4张牌
+    note: 罕见卡下放普通卡（塔1原为普通卡）；补「弃子争先」进罕见、「闪躲翻滚」移出普通留下的缺口
+
+  - name_zh: 触不可及
+    pool: silent
+    rarity: common
+    op: modify
+    cost: 2
+    type: skill
+    keywords: [奇巧]
+    effect: 本回合和下回合获得5格挡
+    upgrade: 7格挡
+
+  - name_zh: 投掷匕首
+    pool: silent
+    rarity: common
+    op: modify
+    cost: 1
+    type: attack
+    before:
+      effect: 造成9点伤害，抽1张牌，然后弃1张牌
+      upgrade: 12点伤害（抽弃张数不变）
+    after:
+      effect: 造成9点伤害，抽1张牌，然后弃1张牌
+      upgrade: 11点伤害，抽2张牌，然后弃2张牌
+    change: 升级收益由「纯+3伤害」改为「+2伤害且抽弃各翻倍」
+    note: 2026-07-26 追加，不在初版设计文档里
+    balance_note: >
+      数值锚点是战士的剑柄打击（PommelStrike）：同为1费、基础9伤，升级后 10伤+抽2 且**无代价**。
+      本卡升级后同费同抽牌但要弃2张，故多给1点伤害（11）作为代价的对价——
+      弃牌是实打实的成本，收益必须压过它，否则升级反而变差。
+    impl_note: >
+      把这张卡从单纯的数值升级变成过牌/弃牌流的构筑件（猎人有大量奇巧与弃牌收益）。
+      原版把抽弃的 1 写死在 async 状态机里，改不动，所以整体替换 OnPlay。
+
+  - name_zh: 闪躲翻滚
+    pool: silent
+    rarity: common
+    op: remove
+    cost: 1
+    type: skill
+    effect: 本回合和下回合获得4(6)格挡
+
+  # ═══════════════════════════════════════════════════════
+  # 4. 机器人 Defect
+  # ═══════════════════════════════════════════════════════
+
+  - name_zh: 递归
+    pool: defect
+    rarity: uncommon
+    op: add
+    cost: 1
+    type: skill
+    effect: 激发最右侧充能球，然后生成一个刚才被激发的充能球
+    upgrade: 费用降为0
+
+  - name_zh: 碎片整理
+    pool: defect
+    rarity: uncommon
+    op: move
+    from: {pool: defect, rarity: rare}
+    to: {pool: defect, rarity: uncommon}
+    cost: 1
+    type: power
+    effect: 获得1集中
+    upgrade: 2集中
+    note: 稀有卡下放
+
+  - name_zh: 冷却剂
+    pool: defect
+    rarity: uncommon
+    op: move
+    from: {pool: defect, rarity: rare}
+    to: {pool: defect, rarity: uncommon}
+    cost: 1
+    type: power
+    effect: 回合结束时每有一种球，获得2格挡
+    upgrade: 3格挡
+    note: 稀有卡下放
+
+  # 注：「强撑」的移出在战士侧的 move 条目中表达（from: defect），此处不重复列 remove
+
+  - name_zh: 寒冰风暴
+    pool: defect
+    rarity: uncommon
+    op: remove
+    cost: 1
+    type: power
+    effect: 回合结束时如果有寒冰充能球，对所有敌人造成6（8）伤害
+
+  - name_zh: 空值
+    pool: defect
+    rarity: uncommon
+    op: remove
+    cost: 2
+    type: attack
+    effect: 造成10（13）点伤害。给予2（3）层虚弱。生成1个黑暗充能球
+
+  - name_zh: 黑暗汇集
+    pool: defect
+    rarity: rare
+    op: add
+    cost: X
+    type: skill
+    keywords: [消耗]
+    effect: 生成1个黑暗充能球，触发所有黑暗充能球的被动X次
+    upgrade: 去除消耗
+
+  - name_zh: 吞噬暗影
+    pool: defect
+    rarity: rare
+    op: remove
+    cost: 1
+    type: power
+    effect: 生成2个黑暗充能球。在你的回合结束时，激发你最左侧的充能球
+
+  - name_zh: 耗尽
+    pool: defect
+    rarity: rare
+    op: add
+    origin: sts1_defect_uncommon
+    cost: 2
+    type: skill
+    effect: 失去一个充能球栏位，获得2集中
+    upgrade: 3集中
+
+  - name_zh: 裂变
+    pool: defect
+    rarity: rare
+    op: add
+    origin: sts1_defect_rare
+    cost: 0
+    type: skill
+    keywords: [消耗]
+    effect: 失去所有充能球，每个+1费，抽1
+    upgrade: 激发（而非失去）所有充能球
+
+  - name_zh: 彩虹
+    pool: defect
+    rarity: rare
+    op: modify
+    type: skill
+    keywords: [消耗]
+    before:
+      cost: 2
+      effect: 获得一个闪电充能球、一个寒冰充能球、一个黑暗充能球，消耗（不消耗）
+    after:
+      cost: 3
+      effect: 获得一个闪电充能球、一个寒冰充能球、一个玻璃充能球、一个黑暗充能球、一个等离子充能球
+    impl_note: >
+      五种球对应 LightningOrb / FrostOrb / GlassOrb / DarkOrb / PlasmaOrb，游戏里就这 5 种。
+      设计初版把「玻璃」写成了「旋转」，已按游戏内正式名统一。
+      改基础费用不能用 EnergyCost.SetCustomBaseCost（内部 AssertMutable，对规范实例会抛异常
+      并导致游戏启动失败），改为 postfix CardEnergyCost 构造函数写 _base 与 Canonical 两个字段。
+      upgrade: 去除消耗
+
+  - name_zh: 冰之长枪
+    name_en: IceLance
+    pool: defect
+    rarity: rare
+    op: modify
+    type: attack
+    before:
+      cost: 3
+      effect: 造成19(24)点伤害，然后获得3个寒冰充能球
+      upgrade: 伤害+5
+    after:
+      cost: 3
+      effect: 获得3个寒冰充能球，然后造成「本场战斗生成的寒冰充能球数 × 2」点伤害
+      upgrade: 费用降为2（不再加伤害）
+    change: 固定伤害改为随本场战斗累计寒冰球数成长；升级由「+5伤害」改为「降1费」
+    note: 2026-07-27 追加，不在初版设计文档里
+    impl_note: >
+      「本场战斗生成的寒冰球数」是**累计量**（不是当前场上数量），数据源用战斗历史
+      `History.Entries.OfType<OrbChanneledEntry>()`——OrbCmd.Channel 每次都会记一条，
+      不用自己维护跨回合状态。
+      ⚠️ 顺序陷阱：设计是「先获得球再结算伤害」，所以卡面倍率必须把本卡自己生成的 3 个也算进去，
+      否则打出前显示 2N、实际打出 2(N+3)，看起来像 bug。
+      对应地，实际伤害不能直接把 CalculatedDamageVar 交给 DamageCmd（那时 3 个球已入队，
+      倍率函数会再加一次，变成 2(N+6)），要显式计算。
+
+  - name_zh: 四重释放
+    pool: defect
+    rarity: ancient
+    op: remove
+    cost: 1
+    type: skill
+    effect: （0）费，激发最右侧充能球4次
+
+  - name_zh: 自举循环
+    pool: defect
+    rarity: ancient
+    op: add
+    cost: 1
+    type: skill
+    effect: 触发最右侧充能球的被动，激发最右侧充能球2次，然后生成一个刚才被激发的充能球
+    upgrade: 费用降为0
+    note: 替代被移除的「四重释放」。启用中；「递归矩阵」是它的备用选项
+
+  - name_zh: 递归矩阵
+    pool: defect
+    rarity: ancient
+    op: add
+    status: shelved
+    shelved_note: 2026-10-12 转为备用选项，未进卡池。代码与本地化存档在 Shelved/RecursiveMatrix/（不参与编译）。
+    cost: 1
+    type: skill
+    effect: 激发所有的充能球，然后按顺序生成所有被激发的充能球
+    upgrade: 费用降为0
+    note: 「自举循环」的备用选项
+
+  - name_zh: 偏差认知
+    pool: defect
+    rarity: ancient
+    op: modify
+    cost: 1
+    type: power
+    before:
+      effect: 获得4（5）集中，回合开始时失去1集中
+    after:
+      effect: 获得4（5）集中。回合开始时，若你上一回合未失去过集中，失去1集中
+    note: 配合临时集中。启用中；备用选项是直接移除这张卡。禁忌魔典相关
+    impl_note: >
+      卡面和能力悬浮说明**都要**改 loc（原文是无条件的「每回合开始时失去1集中」）。
+      卡上变量名是 PowerVar<T> 的 typeof(T).Name，即 {FocusPower} / {BiasedCognitionPower}；
+      能力条目用 {Amount}。覆盖 loc 表条目，不能用 DescriptionOverrides.CustomizeDescription
+      （它在 GetFormattedText 之后注入，占位符会原样显示）。
+      「本卡自己扣的那次不算失去集中」，否则会退化成隔回合触发。
+
+  - name_zh: 偏差认知
+    pool: defect
+    rarity: ancient
+    op: remove
+    status: shelved
+    note: 备用选项——直接移除。未启用（启用中的是上面的 modify）
+
+  - name_zh: 核心电泳
+    pool: defect
+    rarity: ancient
+    op: add
+    cost: 1
+    type: power
+    effect: 获得3层人工制品
+    upgrade_keywords: [固有]
+    note: 禁忌魔典相关
+
+  # ═══════════════════════════════════════════════════════
+  # 5. 亡灵契约师 Necrobinder
+  # 已知问题：目前缺少真正的可复用加费
+  # ═══════════════════════════════════════════════════════
+
+  - name_zh: 收集灵魂
+    pool: necrobinder
+    rarity: rare
+    op: add
+    cost: 1
+    type: skill
+    keywords: [保留]
+    effect: 将弃牌堆和抽牌堆中的灵魂尽可能加入手牌
+    upgrade: 额外向手牌中增加一张灵魂
+    note: 按次序执行；手牌上限为10，达到上限就会停止
+
+  - name_zh: 幻景
+    pool: necrobinder
+    rarity: rare
+    op: modify
+    cost: 2
+    type: skill
+    before:
+      effect: 消耗所有手牌。如果消耗了9张牌（满手牌使用），获得1层无实体
+    after:
+      effect: 选择0-1张手牌，消耗其他所有手牌。如果消耗了9张牌，获得1层无实体
+      upgrade: 费用降为1；可选择0-2张手牌
+
+  - name_zh: 点燃灵魂
+    pool: necrobinder
+    rarity: uncommon
+    op: add
+    cost: 1
+    type: skill
+    effect: 【你】获得6格挡，将【你】手牌中的所有灵魂变成燃料
+    upgrade: 7格挡，变成燃料+
+    note: 目标是将灵魂从「抽牌」变成「加费」。启用中；备用选项是「奇迹」版
+
+  - name_zh: 点燃灵魂
+    pool: necrobinder
+    rarity: uncommon
+    op: add
+    status: shelved
+    cost: 1
+    type: skill
+    effect: 8格挡，选择手牌中任意数量的灵魂，将他们变成奇迹
+    upgrade: 10格挡，变成奇迹+
+    note: 备用选项，未启用、无代码。奇迹在塔2里不存在，需要另造一张衍生卡
+
+  - name_zh: 增生
+    pool: necrobinder
+    rarity: uncommon
+    op: modify
+    cost: 1
+    type: skill
+    before:
+      effect: 召唤3（5），奥斯提回复5（7）生命
+    after:
+      effect: >
+        召唤3（5），奥斯提回复9（12）生命，本回合奥斯提会优先于【你】的格挡承受攻击伤害。
+        伤害顺序由「格挡 → 奥斯提 → 你的生命」变为「奥斯提 → 格挡 → 你的生命」，
+        奥斯提吃不完的部分才轮到格挡
+    impl_note: >
+      「优先于格挡承受伤害」**不叠加持续时间**：一回合内无论打出多少张，都只有一个状态（SpurPower，
+      StackType.Single，挂在玩家身上），在【你】的下个回合开始时移除——要撑过敌方回合，所以不是回合结束时移除。
+      不要做成按层数每回合递减的计数器（打2张会延续到下回合）。
+      伤害管线没有「格挡前改目标」的钩子：SpurPower 在 BeforeDamageReceived 里记下奥斯提要先吃多少，
+      再由 prefix Creature.DamageBlockInternal 把这部分从「要用格挡挡的伤害」里扣掉；
+      转移给奥斯提、溢出回到玩家生命 都走原版 DieForYouPower 的逻辑。
+      只对 powered attack 生效（与 DieForYouPower 一致）；直接以奥斯提为目标的攻击不受影响。
+    note: >
+      多种用法：1. 快速让奥斯提死去以启动「忧郁」（3费13(17)格挡并获得1费，本场战斗每死去一个
+      单位费用-1，包括奥斯提）；2. 奥斯提血上限极高时，本卡提供的防御数值超模（总和12(17)）
+
+  - name_zh: 忧郁
+    name_en: Melancholy
+    pool: necrobinder
+    rarity: uncommon
+    op: modify
+    cost: 3
+    type: skill
+    before:
+      effect: 【你】获得13（17）格挡。每当有任何生物死亡时，这张牌的耗能减少1
+    after:
+      effect: 【你】获得13（17）格挡，【你】获得1费。每当有任何生物死亡时，这张牌的耗能减少1
+    change: 追加「获得1费」，其余不变
+    note: 2026-10-12 追加。给亡灵契约师补一张「有条件的加费卡」（该角色缺可复用加费）
+    balance_note: >
+      返费恒定为1（不随死亡数变化），耗能每有一个生物死亡递减1、下限0。净耗能序列按死亡数：
+      0次 净2费 → 1次 净1费 → 2次 净0费 → 3次及以上 每次打出净赚1费。
+      奥斯提死亡也计入，与「增生」的送死用法配套。
+    impl_note: >
+      原版 OnPlay 不替换，postfix 包 Task 等它跑完再 GainEnergy（同袖里乾坤）。
+      返费量读卡上原有的 Energy 变量（原版表示每次死亡降几费，值为1），卡面两处能量图标共用它。
+      降费只在本卡处于战斗牌堆时生效（原版逻辑，未改）。
+
+  - name_zh: 挽歌
+    name_en: Dirge
+    pool: necrobinder
+    rarity: uncommon
+    op: modify
+    cost: X
+    type: skill
+    keywords: [消耗]
+    effect: 召唤3，X次；将X张灵魂加入【你】的抽牌堆
+    before:
+      upgrade: 召唤4；加入的灵魂变为灵魂+
+    after:
+      upgrade: 去除消耗（召唤量仍为3，灵魂不再变为灵魂+）
+    change: 升级由「召唤+1、灵魂升级」整体换成「去除消耗」
+    note: 2026-10-12 追加
+    impl_note: >
+      原版升级有两半：召唤+1 在 OnUpgrade 里；「灵魂变灵魂+」是 OnPlay、悬浮提示、卡面文本
+      各自读 IsUpgraded。只换 OnUpgrade 会漏掉后一半，所以 OnPlay / ExtraHoverTips / loc 都一起改了。
+
+  - name_zh: 死亡使者
+    pool: necrobinder
+    rarity: uncommon
+    op: remove
+    cost: 2
+    effect: 给予所有敌人21（26）层灾厄和1层虚弱
+
+  - name_zh: 榨取
+    pool: necrobinder
+    rarity: common
+    op: move
+    from: {pool: necrobinder, rarity: rare}
+    to: {pool: necrobinder, rarity: common}
+    cost: 2
+    type: attack
+    effect: 奥斯提造成12点伤害。你的整套牌组中每有一张奥斯提的攻击牌（包含此卡自身），此卡额外造成3点伤害
+    upgrade: 14点伤害，每张额外4点
+    note: 稀有卡下放普通卡
+
+  - name_zh: 来生
+    pool: necrobinder
+    rarity: common
+    op: remove
+    cost: 1
+    keywords: [消耗]
+    effect: 召唤6（9）
+
+  # ═══════════════════════════════════════════════════════
+  # 6. 储君 Prince
+  # ═══════════════════════════════════════════════════════
+
+  - name_zh: 昼夜轮替
+    pool: prince
+    rarity: rare
+    op: add
+    cost: X
+    cost_star: X
+    type: skill
+    keywords: [消耗]
+    effect: 将费用与辉星互换
+    upgrade: 去除消耗
+
+  - name_zh: 划空流星
+    pool: prince
+    rarity: rare
+    op: add
+    status: shelved
+    cost: 1
+    type: skill
+    keywords: [虚无]
+    effect: >
+      抽到时触发其效果，且本卡留在手牌中（不进入弃牌堆）。
+      在以下效果中随机2个选项，选择触发1个：
+      加1费 / 获得2辉星 / 抽1 / 抽2弃2 / 预见3 / 选择0-1张手牌消耗 /
+      铸造5 / 获得2覆甲 / 本回合保留护甲
+    upgrade_keywords: [保留]
+    upgrade: 去除虚无，改为保留；随机3个选项
+    shelved_note: 2026-10-12 暂时放弃，未进卡池。代码与本地化存档在 Shelved/StreakingMeteor/（不参与编译）。恢复时储君稀有池会多1张，需另行补平。
+    note: >
+      选项池共9个。抽到触发后本卡**留在手牌**，因此还可以再花1费手动触发一次；
+      未升级由虚无在回合末兜底，升级为保留后才能跨回合复用。
+    impl_note: >
+      抽到触发**不能**走 CardCmd.AutoPlay —— AutoPlay 会真的把卡打出去、结算完进弃牌堆，
+      与「留在手牌」冲突。要把效果抽成独立方法，AfterCardDrawn 和 OnPlay 各自调用。
+      代价是绕过打出管线（BeforeCardPlayed/AfterCardPlayed 不触发），但这本就不是一次打出。
+    selection_rules: >
+      9个选项已全部命名为衍生卡：星火(加1费) / 拾星(2辉星) / 启明(抽1) / 流转(抽2弃2) /
+      焚尽(消耗0-1张) / 淬火(铸造5) / 覆鳞(2覆甲) / 滞影(保留护甲) / 预兆(预见3)。
+      选择界面不可跳过（canSkip: false）。
+
+  - name_zh: 新生之喜
+    pool: prince
+    rarity: rare
+    op: remove
+    cost: 1
+    keywords: [消耗]
+    effect: 将3张随机无色牌添加到你的手牌
+
+  - name_zh: 决胜一击
+    pool: prince
+    rarity: uncommon
+    op: remove
+    cost: 3
+    type: attack
+    effect: 30（38）伤害。如果击杀了敌人，获得5辉星
+
+  - name_zh: 追打
+    pool: prince
+    rarity: uncommon
+    op: add
+    cost: 1
+    type: attack
+    effect: 5伤害，铸造5，本回合如果打出过君王之剑，获得1费，抽1
+    upgrade: 7伤害，铸造7
+
+  - name_zh: 征召上前
+    pool: prince
+    rarity: uncommon
+    op: modify
+    cost: 1
+    type: skill
+    before:
+      effect: 铸造8（11）。不论何处，将君王之剑放入你的手牌
+    after:
+      effect: >
+        打出时【你】的手牌中每有一张君王之剑，【你】获得1点能量。铸造7（10）。
+        不论何处，将君王之剑放入你的手牌。按书写顺序结算
+    impl_note: >
+      加费**只读打出那一刻的手牌**：先数、先给费，然后才铸造、收剑。
+      本卡铸造时新生成的那把（本场第一次铸造）、本卡自己收进手牌的剑都不计入。
+      2026-10-12 之前的实现是「先收剑再数」，收进来的也算——等于只要场上有剑就必定返费，已改掉。
+
+  - name_zh: 淬炼刀刃
+    pool: prince
+    rarity: common
+    op: modify
+    type: skill
+    before:
+      cost: 1
+      effect: 铸造9（13）。在下个回合获得1费
+    after:
+      cost: 2
+      effect: 铸造12（16）。如果本回合铸造过，获得2费，否则在下个回合获得2费

@@ -1,0 +1,79 @@
+{
+  "REBALANCE_BY_STS1_REVIVAL-AGGREGATE.title": "汇集",
+  "REBALANCE_BY_STS1_REVIVAL-AGGREGATE.description": "#抽牌堆每有 {C} 张牌，获得 [E]。",
+
+  "REBALANCE_BY_STS1_REVIVAL-BERSERK.title": "狂暴",
+  "REBALANCE_BY_STS1_REVIVAL-BERSERK.description": "#获得 {VulnerablePower} 层*易伤*。回合开始时获得 [E]。",
+
+  "REBALANCE_BY_STS1_REVIVAL-MAGNETISM.title": "磁力",
+  "REBALANCE_BY_STS1_REVIVAL-MAGNETISM.description": "#每回合向手牌中加入 {C} 张随机无色卡。",
+
+  "REBALANCE_BY_STS1_REVIVAL-MADNESS.title": "疯狂",
+  "REBALANCE_BY_STS1_REVIVAL-MADNESS.description": "#使手牌中一张随机牌本场战斗*免费*。",
+
+  "REBALANCE_BY_STS1_REVIVAL-CHRYSALIS.title": "结茧",
+  "REBALANCE_BY_STS1_REVIVAL-CHRYSALIS.description": "#将 {C} 张随机技能牌置入你的抽牌堆，它们本场战斗*免费*。",
+
+  "REBALANCE_BY_STS1_REVIVAL-DOPPELGANGER.title": "双重存在",
+  "REBALANCE_BY_STS1_REVIVAL-DOPPELGANGER.description": "下回合获得 {IfUpgraded:show:X+1|X} 点能量，抽 {IfUpgraded:show:X+1|X} 张牌。",
+
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM.title": "天人形态",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM.description": "#在你的回合结束时，获得「每回合开始时获得 [E]」。",
+
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR.title": "自我修复",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR.description": "#战斗结束时，回复 {SelfRepairPower} 点生命。",
+
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY.title": "操控现实",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY.description": "#本场战斗中产生的所有卡牌都升级。",
+
+  "REBALANCE_BY_STS1_REVIVAL-DAY_NIGHT_CYCLE.title": "昼夜轮替",
+  "REBALANCE_BY_STS1_REVIVAL-DAY_NIGHT_CYCLE.description": "将你的{energyPrefix:energyIcons(1)}与{singleStarIcon}互换。",
+
+  "REBALANCE_BY_STS1_REVIVAL-FOLLOW_UP.title": "追打",
+  "REBALANCE_BY_STS1_REVIVAL-FOLLOW_UP.description": "#造成 {D} 点伤害，铸造 {Forge}。若你本回合打出过*君王之剑*，获得 [E] 并抽 1 张牌。",
+
+  "REBALANCE_BY_STS1_REVIVAL-COLLECT_SOULS.title": "收集灵魂",
+  "REBALANCE_BY_STS1_REVIVAL-COLLECT_SOULS.description": "{IfUpgraded:show:将你弃牌堆和抽牌堆中的所有[gold]灵魂[/gold]尽可能加入手牌，然后再将一张灵魂加入手牌。|将你弃牌堆和抽牌堆中的所有[gold]灵魂[/gold]尽可能加入手牌。}",
+
+  "REBALANCE_BY_STS1_REVIVAL-IGNITE_SOUL.title": "点燃灵魂",
+  "REBALANCE_BY_STS1_REVIVAL-IGNITE_SOUL.description": "获得 {Block} 点[gold]格挡[/gold]。将你手牌中的所有[gold]灵魂[/gold]变成{IfUpgraded:show:[gold]燃料+[/gold]|[gold]燃料[/gold]}。",
+
+  "REBALANCE_BY_STS1_REVIVAL-RECURSION.title": "递归",
+  "REBALANCE_BY_STS1_REVIVAL-RECURSION.description": "#激发最右侧充能球，然后生成一个刚才被激发的充能球。",
+
+  "REBALANCE_BY_STS1_REVIVAL-CONSUME.title": "耗尽",
+  "REBALANCE_BY_STS1_REVIVAL-CONSUME.description": "#失去 1 个充能球栏位。获得 {FocusPower} 点*集中*。",
+
+  "REBALANCE_BY_STS1_REVIVAL-FISSION.title": "裂变",
+  "REBALANCE_BY_STS1_REVIVAL-FISSION.description": "#-失去-+激发+所有充能球。每有一个，获得 [E] 并抽 1 张牌。",
+
+  "REBALANCE_BY_STS1_REVIVAL-DARK_GATHER.title": "黑暗汇集",
+  "REBALANCE_BY_STS1_REVIVAL-DARK_GATHER.description": "#生成 1 个*黑暗*充能球，然后触发所有黑暗充能球的被动 X 次。",
+
+  "REBALANCE_BY_STS1_REVIVAL-BOOTSTRAP_LOOP.title": "自举循环",
+  "REBALANCE_BY_STS1_REVIVAL-BOOTSTRAP_LOOP.description": "#触发最右侧充能球的被动，激发它 2 次，然后生成一个刚才被激发的充能球。",
+
+  "REBALANCE_BY_STS1_REVIVAL-CORE_SURGE.title": "核心电泳",
+  "REBALANCE_BY_STS1_REVIVAL-CORE_SURGE.description": "#获得 {ArtifactPower} 层*人工制品*。",
+
+  "REBALANCE_BY_STS1_REVIVAL-UNLOAD.title": "乾坤一掷",
+  "REBALANCE_BY_STS1_REVIVAL-UNLOAD.description": "#造成 {D} 点伤害。丢弃所有手牌，然后抽-等量-+等量加一+的牌。",
+
+  "REBALANCE_BY_STS1_REVIVAL-PAWN_SACRIFICE.title": "弃子争先",
+  "REBALANCE_BY_STS1_REVIVAL-PAWN_SACRIFICE.description": "#丢弃 2 张手牌。下回合获得 [E?]。",
+
+  "REBALANCE_BY_STS1_REVIVAL-REAPER.title": "死亡收割",
+  "REBALANCE_BY_STS1_REVIVAL-REAPER.description": "#对所有敌人造成 {D} 点伤害。回复等同于未被格挡伤害的生命。",
+
+  "REBALANCE_BY_STS1_REVIVAL-SEARING_BLOW.title": "灼热攻击",
+  "REBALANCE_BY_STS1_REVIVAL-SEARING_BLOW.description": "#造成 {D} 点伤害。可以多次升级。",
+
+  "REBALANCE_BY_STS1_REVIVAL-RECKLESS_CHARGE.title": "无谋冲锋",
+  "REBALANCE_BY_STS1_REVIVAL-RECKLESS_CHARGE.description": "#造成 {D} 点伤害。将一张*眩晕*置入你的抽牌堆。",
+
+  "REBALANCE_BY_STS1_REVIVAL-WILD_STRIKE.title": "狂野打击",
+  "REBALANCE_BY_STS1_REVIVAL-WILD_STRIKE.description": "#造成 {D} 点伤害。将一张*伤口*置入你的抽牌堆。",
+
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND.title": "以手拒之",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND.description": "#造成 {D} 点伤害。每当你攻击该敌人时，获得 {TalkToTheHandPower} 点*格挡*。"
+}

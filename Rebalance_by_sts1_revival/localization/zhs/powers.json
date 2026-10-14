@@ -1,0 +1,17 @@
+{
+  "REBALANCE_BY_STS1_REVIVAL-SPUR_POWER.title": "增生",
+  "REBALANCE_BY_STS1_REVIVAL-SPUR_POWER.description": "#*奥斯提*会先于你的*格挡*承受攻击伤害。在你的下个回合开始时移除。",
+  "REBALANCE_BY_STS1_REVIVAL-SPUR_POWER.smartDescription": "#*奥斯提*会先于你的*格挡*承受攻击伤害。在你的下个回合开始时移除。",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM_POWER.title": "天人形态",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM_POWER.description": "#在你的回合结束时，你的每回合能量再永久提升。",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM_POWER.smartDescription": "#在你的回合结束时，你的每回合能量再永久提升 {Amount} 点。",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR_POWER.title": "自我修复",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR_POWER.description": "#战斗结束时回复生命。",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR_POWER.smartDescription": "#战斗结束时回复 {Amount} 点生命。",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY_POWER.title": "操控现实",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY_POWER.description": "#本场战斗中产生的所有卡牌都升级。",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY_POWER.smartDescription": "#本场战斗中产生的所有卡牌都升级。",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND_POWER.title": "以手拒之",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND_POWER.description": "#攻击该敌人的一方获得*格挡*。",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND_POWER.smartDescription": "#每当你攻击该敌人时，你获得 {Amount} 点*格挡*。"
+}

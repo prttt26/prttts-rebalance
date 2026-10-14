@@ -1,0 +1,17 @@
+{
+  "REBALANCE_BY_STS1_REVIVAL-SPUR_POWER.title": "Spur",
+  "REBALANCE_BY_STS1_REVIVAL-SPUR_POWER.description": "#*Osty* absorbs attack damage before your *Block*. Removed at the start of your next turn.",
+  "REBALANCE_BY_STS1_REVIVAL-SPUR_POWER.smartDescription": "#*Osty* absorbs attack damage before your *Block*. Removed at the start of your next turn.",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM_POWER.title": "Deva Form",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM_POWER.description": "#At the end of your turn, permanently gain more Energy per turn.",
+  "REBALANCE_BY_STS1_REVIVAL-DEVA_FORM_POWER.smartDescription": "#At the end of your turn, permanently gain {Amount} more Energy per turn.",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR_POWER.title": "Self Repair",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR_POWER.description": "#At the end of combat, heal.",
+  "REBALANCE_BY_STS1_REVIVAL-SELF_REPAIR_POWER.smartDescription": "#At the end of combat, heal {Amount} HP.",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY_POWER.title": "Master Reality",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY_POWER.description": "#Whenever a card is created during combat, upgrade it.",
+  "REBALANCE_BY_STS1_REVIVAL-MASTER_REALITY_POWER.smartDescription": "#Whenever a card is created during combat, upgrade it.",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND_POWER.title": "Talk to the Hand",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND_POWER.description": "#Attacking this enemy grants *Block*.",
+  "REBALANCE_BY_STS1_REVIVAL-TALK_TO_THE_HAND_POWER.smartDescription": "#Whenever you attack this enemy, gain {Amount} *Block*."
+}
